@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Sample App</title>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/lib/require.js"></script>
+    <link href="style/stylesheet.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <div class="cart-summary">
+            <div><span data-bind="text: cart.count"></span> items in your cart</div>
+            <div class="cart-details">
+                <div data-bind="visible: cart.count() == 0">
+                    your cart is empty :(
+                </div>
+                <table data-bind="if: cart.count() > 0">
+                    <tr>
+                        <th class="cell">Qty</th>
+                        <th class="cell">Name</th>
+                        <th class="cell">Price</th>
+                        <th class="cell">Sub-Total</th>
+                    </tr>
+                    <tbody data-bind="foreach: cart.contents">
+                        <tr>
+                            <td data-bind="text: count" class="cell"></td>
+                            <td data-bind="text: name" class="cell"></td>
+                            <td data-bind="text: price" class="cell"></td>
+                            <td data-bind="text: subTotal" class="cell"></td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3">Total</td>
+                            <td data-bind="text: cart.subTotal"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+
+        <h1>Sample Store  App</h1>
+    </header>
+    <section class="main-viewing-area">
+        <div class="search-area">
+            <div class="search-bar">
+                Search: <input type="text" value="" data-bind="value: searchText"  class="search-text"/> <input type="button" value="Search!" data-bind="click: executeSearch" /><br />
+            </div>
+
+            <div data-bind="if: searchResults, visible: searchResults() != null && searchResults().length > 0" style="display: none;" class="search-results">
+                <div class="search-results-summary"><span data-bind="text: searchResults().length"></span> Results Found!</div>
+                <table class="search-results-items">
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>In Stock</th>
+                        <th>Price</th>
+                    </tr>
+                    <tbody data-bind="foreach: searchResults">
+                        <tr data-bind="click: $parent.selectItem, css: { 'selected-row': $parent.selectedItem() != null && $parent.selectedItem().id() == id() }">
+                            <td><input type="button" value="+" data-bind="click: $parent.addToCart" /></td>
+                            <td data-bind="text: name"></td>
+                            <td data-bind="text: inStock"></td>
+                            <td data-bind="text: price"></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="details-area">
+                <div data-bind="ifnot: selectedItem" style="padding-top: 20px;">
+                    Search and select an item to see the details
+                </div>
+                <div data-bind="with: selectedItem, visible: selectedItem" style="display: none;">
+                    <h2 data-bind="text: name">Details!!!</h2>
+                    <label>In Stock:</label> <span data-bind="text: inStock"></span><br />
+                    <label>Price:</label> <span data-bind="text: price"></span><br />
+                    <label>Summary:</label><div data-bind="text: summary"></div>
+                    <br/>
+                    <input type="button" value="+ Add to Cart" data-bind="click: $parent.addToCart" />
+                </div>
+            </div>
+        </div>
+    </section>
+<script type="text/javascript">
+    require(["knockout", "app/indexViewModel"],
+        function (ko, IndexViewModel) {
+
+            var vm = new IndexViewModel();
+            ko.applyBindings(vm);
+
+        });
+</script>
+</body>
+</html>
