@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace SampleWebSite.UITests
 {
     [TestFixture]
-    public class IndexTests
+    public class IndexTests_FullIntegration
     {
 
         private IWebDriver _webDriver;
