@@ -1,4 +1,4 @@
-﻿define(["jQuery", "lodash"],
+﻿define(["jquery", "lodash"],
 function ($, _) {
 
     function ItemService() {
@@ -13,15 +13,35 @@ function ($, _) {
     ItemService.prototype.search = function (searchText) {
         console.log('ItemService.search("' + searchText + '")');
 
-        return this.fakeServiceResults;
+        var promise = $.Deferred();
+
+        $.ajax({
+            url: "/api/items",
+            datatype: "json"
+        }).done(function (data) {
+            promise.resolve(data);
+        }).fail(function (error) {
+            promise.reject(error);
+        });
+
+        return promise;
     };
 
     ItemService.prototype.getItem = function (itemId) {
         console.log('ItemService.getItem("' + itemId + '")');
 
-        return _.find(this.fakeServiceResults, function (item) {
-            return item.id == itemId;
+        var promise = $.Deferred();
+
+        $.ajax({
+            url: "/api/items/" + itemId,
+            datatype: "json"
+        }).done(function (data) {
+            promise.resolve(data);
+        }).fail(function (error) {
+            promise.reject(error);
         });
+
+        return promise;
     }
 
     return ItemService;

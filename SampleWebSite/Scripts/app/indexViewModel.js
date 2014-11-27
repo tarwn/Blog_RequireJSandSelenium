@@ -19,6 +19,7 @@ function (ko,
         var self = this;
 
         this.searchText = ko.observable();
+        this.isSearching = ko.observable(false);
         this.searchResults = ko.observableArray();
         this.executeSearch = function () {
             console.log('IndexViewModel.executeSearch("' + searchText + '");')
@@ -26,24 +27,31 @@ function (ko,
             //clear current search selection
             self.selectedItem(null);
 
-            // peform the search
+            // perform the search
+            self.isSearching(true);
             var searchText = self.searchText();
-            var rawResults = itemService.search(searchText);
 
-            // convert to models and display
-            var results = _.map(rawResults, function (rawResult) {
-                return new ItemSummary(rawResult);
+            itemService.search(searchText).then(function (rawResults) {
+                // convert to models and display
+                var results = _.map(rawResults, function (rawResult) {
+                    return new ItemSummary(rawResult);
+                });
+                self.searchResults(results);
+                self.isSearching(false);
             });
-            self.searchResults(results);
         };
         
         this.selectedItem = ko.observable();
+        this.isLoadingSelectedItem = ko.observable(false);
         this.selectItem = function (item) {
             console.log('IndexViewModel.selectItem(' + item + ');')
 
-            var rawFullItem = itemService.getItem(item.id());
-            var fullItem = new ItemFull(rawFullItem);
-            self.selectedItem(fullItem);
+            self.isLoadingSelectedItem(true);
+            itemService.getItem(item.id()).then(function (rawFullItem) {
+                var fullItem = new ItemFull(rawFullItem);
+                self.selectedItem(fullItem);
+                self.isLoadingSelectedItem(false);
+            });
         };
 
         this.cart = new Cart();

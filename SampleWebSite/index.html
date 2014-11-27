@@ -47,6 +47,9 @@
                 Search: <input type="text" value="" data-bind="value: searchText"  class="search-text"/> <input type="button" value="Search!" data-bind="click: executeSearch" /><br />
             </div>
 
+            <div data-bind="if: isSearching">Searching...</div>
+
+            <!-- ko ifnot: isSearching -->
             <div data-bind="if: searchResults, visible: searchResults() != null && searchResults().length > 0" style="display: none;" class="search-results">
                 <div class="search-results-summary"><span data-bind="text: searchResults().length"></span> Results Found!</div>
                 <table class="search-results-items">
@@ -66,19 +69,24 @@
                     </tbody>
                 </table>
             </div>
+            <!-- /ko -->
 
             <div class="details-area">
-                <div data-bind="ifnot: selectedItem" style="padding-top: 20px;">
-                    Search and select an item to see the details
-                </div>
-                <div data-bind="with: selectedItem, visible: selectedItem" style="display: none;">
-                    <h2 data-bind="text: name">Details!!!</h2>
-                    <label>In Stock:</label> <span data-bind="text: inStock"></span><br />
-                    <label>Price:</label> <span data-bind="text: price"></span><br />
-                    <label>Summary:</label><div data-bind="text: summary"></div>
-                    <br/>
-                    <input type="button" value="+ Add to Cart" data-bind="click: $parent.addToCart" />
-                </div>
+                <div data-bind="if: isLoadingSelectedItem">Loading...</div>
+
+                <!-- ko ifnot: isLoadingSelectedItem -->
+                    <div data-bind="ifnot: selectedItem" style="padding-top: 20px;">
+                        Search and select an item to see the details
+                    </div>
+                    <div data-bind="with: selectedItem, visible: selectedItem" style="display: none;">
+                        <h2 data-bind="text: name">Details!!!</h2>
+                        <label>In Stock:</label> <span data-bind="text: inStock"></span><br />
+                        <label>Price:</label> <span data-bind="text: price"></span><br />
+                        <label>Summary:</label><div data-bind="text: summary"></div>
+                        <br/>
+                        <input type="button" value="+ Add to Cart" data-bind="click: $parent.addToCart" />
+                    </div>
+                <!-- /ko -->
             </div>
         </div>
     </section>
