@@ -16,34 +16,6 @@ namespace SampleWebSite.UITests
         private IWebDriver _webDriver;
         private string _url = "http://localhost:63431/";
 
-        [TestFixtureSetUp]
-        public void TestFixtureSetup()
-        {
-            _webDriver = new ChromeDriver();
-        }
-
-        [TestFixtureTearDown]
-        public void TestFixtureTearDown()
-        {
-            _webDriver.Close();
-            _webDriver.Dispose();
-        }
-
-        [Test]
-        public void WhenUserSearchesForItemsAndSelectsOne_ThenDetailsAreDisplayedForTheSelectedProduct()
-        {
-            var indexPage = new IndexPage(_webDriver, _url, "Sample App");
-            InjectReplacementItemServiceMethods();
-            indexPage.SearchButton.Click();
-            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.SearchResultsTable) && indexPage.SearchResultsTable.Displayed, "Search results");
-            Assert.AreNotEqual(0, indexPage.GetNumberOfSearchResults());
-
-            indexPage.ClickSearchResults(0);
-            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.ItemDetails) && indexPage.ItemDetails.Displayed, "Item Details");
-
-            Assert.AreEqual(indexPage.GetSelectedRowItemName(), indexPage.ItemDetailsName.Text);
-        }
-
         private void InjectReplacementItemServiceMethods()
         {
             // the tricky part is that everything may have already instantiated the service, so we
@@ -51,7 +23,7 @@ namespace SampleWebSite.UITests
             //  and ensure the rest of our code uses the service instead of preserving references
             //  to direct methods anywhere
 
-            if(!typeof(IJavaScriptExecutor).IsAssignableFrom(_webDriver.GetType()))
+            if (!typeof(IJavaScriptExecutor).IsAssignableFrom(_webDriver.GetType()))
                 throw new Exception("Using a WebDriver that does not support javascript execution. Bet that makes testing a SPA really tricky...");
 
             ((IJavaScriptExecutor)_webDriver).ExecuteScript(@"
@@ -81,5 +53,35 @@ namespace SampleWebSite.UITests
                 });
             ");
         }
+
+        [TestFixtureSetUp]
+        public void TestFixtureSetup()
+        {
+            _webDriver = new ChromeDriver();
+        }
+
+        [TestFixtureTearDown]
+        public void TestFixtureTearDown()
+        {
+            _webDriver.Close();
+            _webDriver.Dispose();
+        }
+
+        [Test]
+        public void WhenUserSearchesForItemsAndSelectsOne_ThenDetailsAreDisplayedForTheSelectedProduct()
+        {
+            var indexPage = new IndexPage(_webDriver, _url, "Sample App");
+            InjectReplacementItemServiceMethods();
+            indexPage.SearchButton.Click();
+            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.SearchResultsTable) && indexPage.SearchResultsTable.Displayed, "Search results");
+            Assert.AreNotEqual(0, indexPage.GetNumberOfSearchResults());
+
+            indexPage.ClickSearchResults(0);
+            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.ItemDetails) && indexPage.ItemDetails.Displayed, "Item Details");
+
+            Assert.AreEqual(indexPage.GetSelectedRowItemName(), indexPage.ItemDetailsName.Text);
+        }
+
+        
     }
 }

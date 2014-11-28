@@ -94,12 +94,15 @@
         </div>
     </section>
 <script type="text/javascript">
+    var viewmodel;
+
     require(["knockout", "app/indexViewModel"],
         function (ko, IndexViewModel) {
 
             var vm = new IndexViewModel();
             ko.applyBindings(vm);
 
+            viewmodel = vm;
         });
 </script>
 </body>
