@@ -61,6 +61,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IndexPage.cs" />
+    <Compile Include="IndexTests.NancyServerAndPhantom.cs" />
     <Compile Include="IndexTests.NancyServerWithScriptInjection.cs" />
     <Compile Include="IndexTests.NancyServer.cs" />
     <Compile Include="IndexTests.ClientSideInjection.cs" />
@@ -83,8 +84,15 @@
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="..\packages\PhantomJS.1.9.8\tools\phantomjs\phantomjs.exe">
+      <Link>phantomjs.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="FakeScripts\app\services\itemService.js">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="phantomjs-license.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

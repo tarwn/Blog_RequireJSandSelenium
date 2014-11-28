@@ -60,8 +60,7 @@ namespace SampleWebSite.UITests
         [TestFixtureTearDown]
         public void TestFixtureTearDown()
         {
-            _webDriver.Close();
-            _webDriver.Dispose();
+            _webDriver.Quit();
             _webServer.Stop();
         }
 

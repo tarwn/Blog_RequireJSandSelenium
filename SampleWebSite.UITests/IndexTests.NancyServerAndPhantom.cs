@@ -1,9 +1,9 @@
 ﻿using Nancy.Hosting.Self;
 using NUnit.Framework;
 using OpenQA.Selenium;
-using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.PhantomJS;
 using Owin;
-using SampleWebSite.UITests.NancyServerWithScriptInjection;
+using SampleWebSite.UITests.NancyServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace SampleWebSite.UITests
 {
     [TestFixture]
-    public class IndexTests_NancyServerWithScriptInjection
+    public class IndexTests_NancyServerAndPhantom
     {
 
         private string _baseUrl = "http://localhost:5000";
@@ -27,7 +27,7 @@ namespace SampleWebSite.UITests
         public void TestFixtureSetup()
         {
             _webServer = SetupServer();
-            _webDriver = new ChromeDriver();
+            _webDriver = new PhantomJSDriver();
         }
 
         private NancyHost SetupServer()
