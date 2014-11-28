@@ -1,6 +1,7 @@
 ﻿using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.PhantomJS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,10 +10,11 @@ using System.Threading.Tasks;
 
 namespace SampleWebSite.UITests
 {
-    [TestFixture]
-    public class IndexTests_ClientSideInjection
+    [TestFixture(typeof(ChromeDriver))]
+    [TestFixture(typeof(PhantomJSDriver))]
+    public class IndexTests_ClientSideInjection<TDriver>
+        where TDriver : IWebDriver, new()
     {
-
         private IWebDriver _webDriver;
         private string _url = "http://localhost:63431/";
 
@@ -57,7 +59,7 @@ namespace SampleWebSite.UITests
         [TestFixtureSetUp]
         public void TestFixtureSetup()
         {
-            _webDriver = new ChromeDriver();
+            _webDriver = new TDriver();
         }
 
         [TestFixtureTearDown]
