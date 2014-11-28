@@ -69,6 +69,36 @@ namespace SampleWebSite.UITests
         public void WhenUserSearchesForItemsAndSelectsOne_ThenDetailsAreDisplayedForTheSelectedProduct()
         {
             var indexPage = new IndexPage(_webDriver, _baseUrl + "/index.html", "Sample App");
+
+            indexPage.SearchButton.Click();
+            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.SearchResultsTable) && indexPage.SearchResultsTable.Displayed, "Search results");
+            Assert.AreNotEqual(0, indexPage.GetNumberOfSearchResults());
+
+            indexPage.ClickSearchResults(0);
+            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.ItemDetails) && indexPage.ItemDetails.Displayed, "Item Details");
+            Assert.AreEqual(indexPage.GetSelectedRowItemName(), indexPage.ItemDetailsName.Text);
+        }
+
+        [Test]
+        public void WhenUserSearchesForItemsAndAddsOneToCart_ThenTheItemAppearsInTheCart()
+        {
+            var indexPage = new IndexPage(_webDriver, _baseUrl + "/index.html", "Sample App");
+
+            indexPage.SearchButton.Click();
+            Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.SearchResultsTable) && indexPage.SearchResultsTable.Displayed, "Search results");
+            Assert.AreNotEqual(0, indexPage.GetNumberOfSearchResults());
+
+            indexPage.ClickSearchResultAddButtonForRow(0);
+            indexPage.LookAtCartDetails();
+            Assert.AreEqual("1", indexPage.CartCount.Text);
+            Assert.AreEqual(1, indexPage.GetNumberOfCartDetailsRows());
+        }
+
+        [Test]
+        public void WhenUserSearchesForItemsAndClicksOneToViewDetailsAndAddsToCart_ThenTheItemAppearsInTheCart()
+        {
+            var indexPage = new IndexPage(_webDriver, _baseUrl + "/index.html", "Sample App");
+
             indexPage.SearchButton.Click();
             Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.SearchResultsTable) && indexPage.SearchResultsTable.Displayed, "Search results");
             Assert.AreNotEqual(0, indexPage.GetNumberOfSearchResults());
@@ -76,7 +106,10 @@ namespace SampleWebSite.UITests
             indexPage.ClickSearchResults(0);
             Utility.WaitUpTo(5000, () => Utility.IsElementPresent(indexPage.ItemDetails) && indexPage.ItemDetails.Displayed, "Item Details");
 
-            Assert.AreEqual(indexPage.GetSelectedRowItemName(), indexPage.ItemDetailsName.Text);
+            indexPage.ItemDetailsAddToCart.Click();
+            indexPage.LookAtCartDetails();
+            Assert.AreEqual("1", indexPage.CartCount.Text);
+            Assert.AreEqual(1, indexPage.GetNumberOfCartDetailsRows());
         }
 
     }

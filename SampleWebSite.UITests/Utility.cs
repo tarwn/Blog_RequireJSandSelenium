@@ -16,8 +16,8 @@ namespace SampleWebSite.UITests
             int timeElapsed = 0;
             while (!Condition() && timeElapsed < milliseconds)
             {
-                Thread.Sleep(100);
-                timeElapsed += 100;
+                Thread.Sleep(10);
+                timeElapsed += 10;
             }
 
             if (timeElapsed >= milliseconds || !Condition())

@@ -9,7 +9,7 @@
 <body>
     <header>
         <div class="cart-summary">
-            <div><span data-bind="text: cart.count"></span> items in your cart</div>
+            <div><span data-bind="text: cart.count" id="cart-count"></span> items in your cart</div>
             <div class="cart-details">
                 <div data-bind="visible: cart.count() == 0">
                     your cart is empty :(
@@ -64,7 +64,7 @@
                     </thead>
                     <tbody data-bind="foreach: searchResults">
                         <tr data-bind="click: $parent.selectItem, css: { 'selected-row': $parent.selectedItem() != null && $parent.selectedItem().id() == id() }">
-                            <td><input type="button" value="+" data-bind="click: $parent.addToCart" /></td>
+                            <td><input type="button" value="+" data-bind="click: $parent.addToCart" class="add-to-cart-button" /></td>
                             <td data-bind="text: name"></td>
                             <td data-bind="text: inStock"></td>
                             <td data-bind="text: price"></td>
@@ -87,7 +87,7 @@
                         <label>Price:</label> <span data-bind="text: price"></span><br />
                         <label>Summary:</label><div data-bind="text: summary"></div>
                         <br/>
-                        <input type="button" value="+ Add to Cart" data-bind="click: $parent.addToCart" />
+                        <input type="button" id="item-details-add-to-cart" value="+ Add to Cart" data-bind="click: $parent.addToCart" />
                     </div>
                 <!-- /ko -->
             </div>
