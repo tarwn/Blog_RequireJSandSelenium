@@ -61,9 +61,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IndexPage.cs" />
+    <Compile Include="IndexTests.NancyServerWithScriptInjection.cs" />
     <Compile Include="IndexTests.NancyServer.cs" />
     <Compile Include="IndexTests.ClientSideInjection.cs" />
     <Compile Include="IndexTests.FullIntegration.cs" />
+    <Compile Include="NancyServerWithScriptInjection\LocalServer.cs" />
+    <Compile Include="NancyServerWithScriptInjection\LocalServerBootstrapper.cs" />
+    <Compile Include="NancyServerWithScriptInjection\Models\ItemModel.cs" />
+    <Compile Include="NancyServerWithScriptInjection\Models\ItemSummaryModel.cs" />
     <Compile Include="NancyServer\LocalServer.cs" />
     <Compile Include="NancyServer\LocalServerBootstrapper.cs" />
     <Compile Include="NancyServer\Models\ItemModel.cs" />
@@ -76,6 +81,11 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="FakeScripts\app\services\itemService.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup Label="DownloadChromeDriverBuildTask">
