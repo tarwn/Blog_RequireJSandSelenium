@@ -34,6 +34,7 @@ namespace SampleWebSite.UITests
         {
             _webServer = SetupServer();
             _webDriver = new TDriver();
+            _webDriver.Manage().Window.Size = new System.Drawing.Size(1280, 1024);
         }
 
         private NancyHost SetupServer()
