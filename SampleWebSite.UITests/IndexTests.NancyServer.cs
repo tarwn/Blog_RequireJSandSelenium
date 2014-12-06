@@ -8,10 +8,12 @@ using SampleWebSite.UITests.NancyServer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace SampleWebSite.UITests
@@ -66,6 +68,29 @@ namespace SampleWebSite.UITests
         {
             _webDriver.Quit();
             _webServer.Stop();
+        }
+
+        [TearDown]
+        public void TestTeardown()
+        {
+            var dnfo = new DirectoryInfo("screenshots");
+            if (!dnfo.Exists)
+                dnfo.Create();
+
+            string typeName = this.GetType().Name.Replace("`1","");
+            string driverName = _webDriver.GetType().Name;
+            string filename = String.Format("{0}/{1}___{2}___{3}.png",
+                                            dnfo.FullName,
+                                            typeName,
+                                            TestContext.CurrentContext.Test.Name,
+                                            driverName);
+
+            if (typeof(ITakesScreenshot).IsAssignableFrom(_webDriver.GetType()))
+            {
+                ((ITakesScreenshot)_webDriver).GetScreenshot()
+                                              .SaveAsFile(filename, ImageFormat.Png);
+
+            }
         }
 
         [Test]
