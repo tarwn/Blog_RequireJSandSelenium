@@ -1,9 +1,8 @@
 {
-	"name": "local-nancy-tests-casperjs",
+	"name": "local-nancy-tests-nodejs",
 	"dependencies": {
 		"lodash": "*",
 		"bluebird": "*",
-		"casperjs": "*",
-		"phantomcss": "*"
+		"selenium-webdriver": "*"
 	}
 }
