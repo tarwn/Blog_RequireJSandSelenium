@@ -1,5 +1,6 @@
 ﻿using Nancy;
 using Nancy.Conventions;
+using Nancy.Diagnostics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +21,8 @@ namespace SampleWebSite.UITests.NancyServer
         protected override void ConfigureConventions(NancyConventions conventions)
         {
             base.ConfigureConventions(conventions);
+
+            Console.WriteLine("Configuring static files at: " + _serverFolder);
 
             conventions.StaticContentsConventions.AddFile("/index.html", _serverFolder + "/index.html");
             conventions.StaticContentsConventions.AddDirectory("/Scripts", _serverFolder + "/Scripts");

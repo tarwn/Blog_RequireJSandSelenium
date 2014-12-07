@@ -66,3 +66,9 @@ packages/
 
 #Test files
 *.testsettings
+
+#node
+node_modules
+
+#misc
+screenshots

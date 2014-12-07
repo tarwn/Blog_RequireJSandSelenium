@@ -1,0 +1,9 @@
+{
+	"name": "local-nancy-tests-casperjs",
+	"dependencies": {
+		"lodash": "*",
+		"bluebird": "*",
+		"casperjs": "*",
+		"phantomcss": "*"
+	}
+}
