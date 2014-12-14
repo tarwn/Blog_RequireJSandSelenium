@@ -1,4 +1,6 @@
 var Promise = require('bluebird');
+var _ = require('lodash');
+var resemble = require('resemblejs');
 
 var configs = {
 	server: {
@@ -9,12 +11,17 @@ var configs = {
 	},
 	phantom: {
 		"address":	"http://localhost:4444"
-	}
+	},
+	resolutions: [
+		{ name: "1920x1080", width: 1920, height: 1080, definitive: "screenshots/main_index_1920x1080_definitive.png" },
+		{ name: "1024x768", width: 1024, height: 768, definitive: "screenshots/main_index_1024x768_definitive.png" }
+	]
 };
 
 var webServer;
 
 function startWebServer(){
+	console.log('[==info==] Starting web server');
 	return new Promise(function(resolve){
 		var spawn = require('child_process').spawn;
 		webServer = spawn(configs.server.exe, [configs.server.port], {
@@ -22,18 +29,19 @@ function startWebServer(){
 		});
 
 		webServer.stdout.on('data', function(data){
-			console.log("[webServer stdout]: " + data);
+			console.log("[==info==] [webServer stdout]: " + data);
 
 			if(data.toString().indexOf('Server start: ready') > -1)
 				resolve();
 		});
 		webServer.stderr.on('data', function (data) {
-		  console.log('[webServer stdout]: ' + data);
+		  console.log('[==info==] [webServer stdout]: ' + data);
 		});
 	});
 }
 
-function performScreenshots(pageName, url){
+function performScreenshots(screenshotPath, url, resolution){
+	console.log('[==info==] Perform screenshots starting');
 
 	return new Promise(function(resolve, reject){
 		var webdriver = require('selenium-webdriver'),
@@ -44,15 +52,14 @@ function performScreenshots(pageName, url){
 											.withCapabilities(webdriver.Capabilities.phantomjs())
 											.build();
 
-		driver.manage().window().setSize(1920,1080);
-		var resolutionName = "1920x1080";
+		driver.manage().window().setSize(resolution.width, resolution.height);
 
-		console.log('[script] Starting run');
-		console.log('[script] Loading ' + url);
+		console.log('[==info==] [script] Starting run');
+		console.log('[==info==] [script] Loading ' + url);
 		driver.get(url)
 		.then(function(){
 			driver.getTitle().then(function(title){
-				console.log("[script] Loaded: " + title);
+				console.log("[==info==] [script] Loaded: " + title);
 			});
 
 			// get the page set the right way
@@ -84,41 +91,67 @@ function performScreenshots(pageName, url){
 			.then(function(){
 				// screenshot
 				driver.takeScreenshot().then(function(image, err) {
-					require('fs').writeFile('screenshots/' + pageName + '_' + resolutionName + '.png', image, 'base64', function(err) {
-						console.log('[script][error] ' + err);
+					require('fs').writeFile(screenshotPath, image, 'base64', function(err) {
+						//console.log('[script][error] ' + err);
 					});
 				});
 			});
 		})
 		.then(function(){
-				console.log('[script] Finished run successfully');	
-				console.log('[script] Done');
+				console.log('[==info==] [script] Finished run successfully');	
+				console.log('[==info==] Screenshot done');
 				driver.quit();
 				resolve();
 			}, 
 			function(err){
-				console.log('[script] Finished run with error: ' + err);	
-				console.log('[script] Done');
+				console.log('[==info==] [script] Finished run with error: ' + err);	
+				console.log('[==info==] Screenshot done');
 				driver.quit();
 				reject(err);
 			});
 	});
 }
 
-function compareScreenshots(){
+function compareScreenshots(sourcePath, definitivePath, diffPath){
 	// http://huddle.github.io/Resemble.js/
+	console.log('[==info==] Comparing screenshots');
+	
+	return new Promise(function(resolve){
+		resemble(sourcePath).compareTo(definitivePath)
+							.ignoreAntialiasing()
+							.onComplete(function(data){
 
-	return new Promise(resolve){
-		resolve();
-	};
+			var diffImage = data.getImageDataUrl().replace(/^data:image\/png;base64,/,"");
+			fs.writeFile(diffPath, diffImage, 'base64', function(err) {
+				if (err) throw err;
+
+				console.log('[==info==] Done comparing screenshots');
+				resolve(data);
+			});
+		});
+	});
 }
 
 function cleanUp(){
+	console.log('[==info==] Clean up started');
 	webServer.stdin.write('\n');
 	webServer.stdin.end();
+	console.log('[==info==] Clean up done');
 }
 
+
+var performAllScreenshots = function(){
+	var screenshots = _.map(configs.resolutions, function(resolution){
+		return performScreenshots('screenshots/index_' + resolution.name + '.png', configs.server.url, resolution);
+	});
+	return Promise.all(screenshots);
+};
+
+var compareAllScreenshots = function(){
+
+};
+
 startWebServer()
-.then(function(){ return performScreenshots('index', configs.server.url); })
-.then(compareScreenshots)
+.then(performAllScreenshots)
+.then(function(){ return compareScreenshots('screenshots/index_1920x1080.png', 'screenshots/index_1920x1080_definitive.png', 'screenshots/index_1920x1080_comparison.png'); })
 .then(cleanUp);

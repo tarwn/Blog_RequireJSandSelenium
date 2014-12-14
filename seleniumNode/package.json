@@ -3,6 +3,8 @@
 	"dependencies": {
 		"lodash": "*",
 		"bluebird": "*",
-		"selenium-webdriver": "*"
+		"selenium-webdriver": "*",
+		"resemblejs": "*".
+		"phantomjs": "*"
 	}
 }
